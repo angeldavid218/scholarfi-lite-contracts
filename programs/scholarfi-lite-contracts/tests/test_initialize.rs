@@ -13,8 +13,15 @@ fn test_initialize() {
     let program_id = scholarfi_lite_contracts::id();
     let payer = Keypair::new();
     let mut svm = LiteSVM::new();
-    let bytes = include_bytes!("../../../target/deploy/scholarfi_lite_contracts.so");
-    svm.add_program(program_id, bytes).unwrap();
+    let so_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../target/deploy/scholarfi_lite_contracts.so");
+    let bytes = std::fs::read(&so_path).unwrap_or_else(|e| {
+        panic!(
+            "failed to read program binary at {}: {e}. Run `anchor build` first.",
+            so_path.display()
+        )
+    });
+    svm.add_program(program_id, &bytes).unwrap();
     svm.airdrop(&payer.pubkey(), 1_000_000_000).unwrap();
     
     let instruction = Instruction::new_with_bytes(

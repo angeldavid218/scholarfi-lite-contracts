@@ -4,4 +4,12 @@ use anchor_lang::prelude::*;
 pub enum ErrorCode {
     #[msg("Custom error message")]
     CustomError,
+    #[msg("Student is not on this teacher's student list")]
+    StudentNotOnList,
+    #[msg("Achievement title exceeds max length")]
+    TitleTooLong,
+    #[msg("Student list exceeds max allowed students")]
+    StudentListTooLarge,
+    #[msg("Student list account does not belong to this teacher")]
+    UnauthorizedTeacher,
 }
