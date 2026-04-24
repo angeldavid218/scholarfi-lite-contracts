@@ -40,6 +40,15 @@ pub mod scholarfi_lite_contracts {
     ) -> Result<()> {
         instructions::delete_achievement::handler(ctx, achievement_id)
     }
+
+    pub fn update_achievement(
+        ctx: Context<UpdateAchievement>, 
+        achievement_id: u64, 
+        title: String, 
+        achievement_type: AchievementType
+    ) -> Result<()> {
+        instructions::update_achievement::handler(ctx, achievement_id, title, achievement_type)
+    }
         
     
 }
@@ -113,3 +122,25 @@ pub struct DeleteAchievement<'info> {
     )]
     pub achievement: Account<'info, Achievement>,
 }
+
+#[derive(Accounts)]
+#[instruction(achievement_id: u64)]
+pub struct UpdateAchievement<'info> {
+    #[account(mut)]
+    pub teacher: Signer<'info>,
+    /// CHECK: only used as a public key; membership is enforced against the student list.
+    pub student: UncheckedAccount<'info>,
+    #[account(
+        mut,
+        seeds = [
+            crate::constants::ACHIEVEMENT_SEED, 
+            teacher.key().as_ref(), 
+            student.key().as_ref(), 
+            &achievement_id.to_le_bytes(),
+        ],
+        bump = achievement.bump,
+        constraint = achievement.teacher == teacher.key() @ crate::error::ErrorCode::UnauthorizedTeacher,
+    )]
+    pub achievement: Account<'info, Achievement>,
+}
+
