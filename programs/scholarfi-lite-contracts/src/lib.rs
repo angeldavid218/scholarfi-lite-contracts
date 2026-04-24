@@ -33,10 +33,18 @@ pub mod scholarfi_lite_contracts {
     ) -> Result<()> {
         instructions::register_achievement::handler(ctx, achievement_id, title, achievement_type)
     }
+    
+    pub fn delete_achievement(
+        ctx: Context<DeleteAchievement>,
+        achievement_id: u64,
+    ) -> Result<()> {
+        instructions::delete_achievement::handler(ctx, achievement_id)
+    }
+        
+    
 }
 
-// `#[derive(Accounts)]` must live at the crate root so Anchor 1.0 can wire
-// `crate::__client_accounts_*` from the `#[program]` expansion.
+
 #[derive(Accounts)]
 pub struct Initialize {}
 
@@ -82,4 +90,26 @@ pub struct RegisterAchievement<'info> {
     )]
     pub achievement: Account<'info, Achievement>,
     pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+#[instruction(achievement_id: u64)]
+pub struct DeleteAchievement<'info> {
+    #[account(mut)]
+    pub teacher: Signer<'info>,
+    /// CHECK: only used as a public key; membership is enforced against the student list.
+    pub student: UncheckedAccount<'info>,
+    #[account(
+        mut,
+        seeds = [
+            crate::constants::ACHIEVEMENT_SEED,
+            teacher.key().as_ref(),
+            student.key().as_ref(),
+            &achievement_id.to_le_bytes(),
+        ],
+        bump = achievement.bump,
+       constraint = achievement.teacher == teacher.key() @ crate::error::ErrorCode::UnauthorizedTeacher,
+       close = teacher
+    )]
+    pub achievement: Account<'info, Achievement>,
 }

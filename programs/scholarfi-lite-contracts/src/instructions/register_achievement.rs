@@ -25,5 +25,6 @@ pub fn handler(
     achievement.teacher = ctx.accounts.teacher.key();
     achievement.title = title;
     achievement.achievement_type = achievement_type;
+    achievement.bump = ctx.bumps.achievement;
     Ok(())
 }

@@ -16,6 +16,7 @@ pub struct Achievement {
     #[max_len(128)]
     pub title: String,
     pub achievement_type: AchievementType,
+    pub bump: u8,
 }
 
 /// Teacher-scoped list of student wallets allowed to receive achievements.

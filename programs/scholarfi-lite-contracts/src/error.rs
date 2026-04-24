@@ -2,6 +2,8 @@ use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum ErrorCode {
+    #[msg("Invalid achievement id")]
+    InvalidAchievementId,
     #[msg("Custom error message")]
     CustomError,
     #[msg("Student is not on this teacher's student list")]
