@@ -7,9 +7,11 @@ skip-lint = false
 
 [programs.localnet]
 scholarfi_lite_contracts = "6WyK1exZACP5v5RDRJsUkkFvxALDikRhLuiovDyJ9wwQ"
+[programs.devnet]
+scholarfi_lite_contracts = "6WyK1exZACP5v5RDRJsUkkFvxALDikRhLuiovDyJ9wwQ"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
